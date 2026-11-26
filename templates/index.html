@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover and share quality study notes with the NoteNest student community.">
+    <title>NoteNest | Your Notes, One Community</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar container" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="NoteNest home">
+                <span class="brand-mark" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </span>
+                <span>Note<span class="brand-accent">Nest</span></span>
+            </a>
+
+            <button class="menu-toggle" type="button" aria-label="Open navigation menu"
+                    aria-expanded="false" aria-controls="primary-navigation">
+                <span></span><span></span><span></span>
+            </button>
+
+            <div class="nav-links" id="primary-navigation">
+                <a class="nav-link active" href="{{ url_for('home') }}">Home</a>
+                <a class="nav-link" href="{{ url_for('explore_notes') }}">Explore Notes</a>
+                <a class="nav-link" href="{{ url_for('upload_note') }}">Upload Notes</a>
+                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                <a class="button button-small" href="{{ url_for('register') }}">Get Started <span aria-hidden="true">→</span></a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container home-flash-list" role="status" aria-live="polite">
+                    <div class="flash-list">
+                        {% for category, message in messages %}
+                            <p class="flash-message flash-{{ category }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <section class="hero">
+            <div class="container hero-layout">
+                <div class="hero-copy">
+                    <p class="eyebrow"><span class="eyebrow-dot"></span> A better way to study together</p>
+                    <h1>Your Notes,<br><span>One Community.</span></h1>
+                    <p class="hero-description">
+                        Discover, share and access quality study materials with students like you.
+                    </p>
+
+                    <form class="search-bar" id="notes-search" role="search">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                            <path d="m16 16 4.5 4.5"></path>
+                        </svg>
+                        <label class="visually-hidden" for="search-input">Search subjects and notes</label>
+                        <input id="search-input" type="search" placeholder="Search subjects, notes, or courses...">
+                        <button class="button search-button" type="submit">Search</button>
+                    </form>
+
+                    <div class="hero-actions">
+                        <a class="button" href="{{ url_for('explore_notes') }}">Explore Notes <span aria-hidden="true">→</span></a>
+                        <a class="button button-outline" href="{{ url_for('upload_note') }}">Share Notes</a>
+                    </div>
+
+                    <div class="community-note">
+                        <span class="community-avatars" aria-hidden="true">
+                            <span>A</span><span>M</span><span>J</span>
+                        </span>
+                        <p><strong>A community that learns together</strong><br>Study resources, made by students.</p>
+                    </div>
+                </div>
+
+                <div class="hero-art" aria-hidden="true">
+                    <div class="art-orbit orbit-one"></div>
+                    <div class="art-orbit orbit-two"></div>
+                    <div class="floating-label label-top"><span class="label-check">✓</span> Study smarter</div>
+                    <div class="study-board">
+                        <div class="board-top">
+                            <span class="board-brand"><span class="mini-mark">N</span> Your study space</span>
+                            <span class="board-menu">•••</span>
+                        </div>
+                        <div class="board-greeting">
+                            <span class="board-kicker">A LITTLE PROGRESS, EVERY DAY</span>
+                            <strong>Keep learning<br>at your own pace.</strong>
+                        </div>
+                        <div class="board-progress">
+                            <div class="progress-icon">✦</div>
+                            <div class="progress-copy"><strong>Today's focus</strong><span>Database systems</span></div>
+                            <span class="progress-arrow">↗</span>
+                        </div>
+                        <div class="board-lines"><span></span><span></span><span></span></div>
+                    </div>
+                    <div class="floating-label label-bottom"><span class="label-sparkle">✦</span> Notes worth sharing</div>
+                    <span class="art-sparkle sparkle-one">✳</span>
+                    <span class="art-sparkle sparkle-two">✦</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section subjects-section" id="subjects">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">Find your next study topic</p>
+                        <h2>Popular subjects</h2>
+                        <p class="section-description">Explore notes across the subjects students are studying now.</p>
+                    </div>
+                    <a class="text-link desktop-link" href="#recent-notes">Browse recent notes <span aria-hidden="true">→</span></a>
+                </div>
+
+                <div class="subject-grid" id="subject-grid">
+                    <a class="subject-card" href="#recent-notes" data-search="database management system dbms database sql">
+                        <span class="subject-icon icon-violet">DB</span>
+                        <span class="subject-copy"><strong>Database Management System</strong><span>Explore study notes</span></span>
+                        <span class="card-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    <a class="subject-card" href="#recent-notes" data-search="data structures algorithms dsa">
+                        <span class="subject-icon icon-blue">DS</span>
+                        <span class="subject-copy"><strong>Data Structures</strong><span>Explore study notes</span></span>
+                        <span class="card-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    <a class="subject-card" href="#recent-notes" data-search="operating systems os processes">
+                        <span class="subject-icon icon-green">OS</span>
+                        <span class="subject-copy"><strong>Operating Systems</strong><span>Explore study notes</span></span>
+                        <span class="card-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    <a class="subject-card" href="#recent-notes" data-search="python programming python coding">
+                        <span class="subject-icon icon-yellow">Py</span>
+                        <span class="subject-copy"><strong>Python Programming</strong><span>Explore study notes</span></span>
+                        <span class="card-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    <a class="subject-card" href="#recent-notes" data-search="data science analytics">
+                        <span class="subject-icon icon-pink">DA</span>
+                        <span class="subject-copy"><strong>Data Science</strong><span>Explore study notes</span></span>
+                        <span class="card-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    <a class="subject-card" href="#recent-notes" data-search="computer networks networking cn">
+                        <span class="subject-icon icon-cyan">CN</span>
+                        <span class="subject-copy"><strong>Computer Networks</strong><span>Explore study notes</span></span>
+                        <span class="card-arrow" aria-hidden="true">↗</span>
+                    </a>
+                </div>
+                <p class="empty-message" id="subject-empty" hidden>No matching subjects found. Try another search.</p>
+                <a class="text-link mobile-link" href="#recent-notes">Browse recent notes <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <section class="section recent-section" id="recent-notes">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">Fresh from the community</p>
+                        <h2>Recently uploaded notes</h2>
+                        <p class="section-description">A few helpful resources to get your next study session started.</p>
+                    </div>
+                    <span class="recent-badge"><span></span> New this week</span>
+                </div>
+
+                <div class="notes-grid" id="notes-grid">
+                    <article class="note-card" data-search="database management system dbms normalization sql revision guide">
+                        <div class="note-cover cover-violet">
+                            <span class="cover-label">STUDY GUIDE</span>
+                            <span class="cover-title">Database<br>Systems</span>
+                            <span class="cover-decoration" aria-hidden="true">01</span>
+                            <span class="cover-subject">DBMS</span>
+                        </div>
+                        <div class="note-details">
+                            <div class="note-meta"><span>Database Management System</span><span>Today</span></div>
+                            <h3>DBMS Revision Guide</h3>
+                            <p>Clear summaries of normalization, SQL, and core database concepts.</p>
+                            <div class="note-footer"><span class="author-avatar avatar-violet">AK</span><span>Shared by Aanya K.</span><span class="note-pages">12 pages</span></div>
+                        </div>
+                    </article>
+
+                    <article class="note-card" data-search="data structures algorithms trees graphs exam notes dsa">
+                        <div class="note-cover cover-blue">
+                            <span class="cover-label">CLASS NOTES</span>
+                            <span class="cover-title">Data<br>Structures</span>
+                            <span class="cover-decoration" aria-hidden="true">02</span>
+                            <span class="cover-subject">DSA</span>
+                        </div>
+                        <div class="note-details">
+                            <div class="note-meta"><span>Data Structures</span><span>Yesterday</span></div>
+                            <h3>Algorithms &amp; Data Structures</h3>
+                            <p>A concise set of notes on trees, graphs, and common algorithms.</p>
+                            <div class="note-footer"><span class="author-avatar avatar-blue">RS</span><span>Shared by Rohan S.</span><span class="note-pages">18 pages</span></div>
+                        </div>
+                    </article>
+
+                    <article class="note-card" data-search="python programming functions loops beginner cheat sheet">
+                        <div class="note-cover cover-green">
+                            <span class="cover-label">QUICK REFERENCE</span>
+                            <span class="cover-title">Python<br>Essentials</span>
+                            <span class="cover-decoration" aria-hidden="true">03</span>
+                            <span class="cover-subject">PY</span>
+                        </div>
+                        <div class="note-details">
+                            <div class="note-meta"><span>Python Programming</span><span>2 days ago</span></div>
+                            <h3>Python Essentials Cheat Sheet</h3>
+                            <p>Handy examples for functions, loops, and everyday Python basics.</p>
+                            <div class="note-footer"><span class="author-avatar avatar-green">MP</span><span>Shared by Meera P.</span><span class="note-pages">6 pages</span></div>
+                        </div>
+                    </article>
+                </div>
+                <p class="empty-message" id="notes-empty" hidden>No matching notes found. Try another search.</p>
+            </div>
+        </section>
+
+        <section class="community-cta" id="share-notes">
+            <div class="container cta-content" id="join">
+                <div>
+                    <p class="eyebrow eyebrow-light">Good notes go further together</p>
+                    <h2>Your next great study session starts here.</h2>
+                    <p>NoteNest is getting ready to bring students and their best study resources together.</p>
+                </div>
+                <a class="button button-light" href="#subjects">Explore subjects <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-main">
+            <div class="footer-about">
+                <a class="brand footer-brand" href="{{ url_for('home') }}">
+                    <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+                    <span>Note<span class="brand-accent">Nest</span></span>
+                </a>
+                <p>Making it easier for students to learn from and support one another.</p>
+            </div>
+            <div class="footer-links">
+                <div><h3>Explore</h3><a href="#subjects">Popular subjects</a><a href="#recent-notes">Recent notes</a></div>
+                <div><h3>NoteNest</h3><a href="{{ url_for('upload_note') }}">Share notes</a><a href="{{ url_for('register') }}">Get started</a></div>
+                <div><h3>Made for students</h3><p>Learn a little. Share a lot.</p></div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <span>© 2026 NoteNest. Built for learning together.</span>
+            <span>Student-powered, community-focused.</span>
+        </div>
+    </footer>
+</body>
+</html>

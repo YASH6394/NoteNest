@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage the notes you have uploaded to NoteNest.">
+    <title>My uploads | NoteNest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</head>
+<body class="notes-page">
+    <header class="site-header">
+        <nav class="navbar notes-navbar container" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="NoteNest home">
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span>Note<span class="brand-accent">Nest</span></span>
+            </a>
+            <div class="notes-navigation">
+                <div class="notes-nav-links">
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link" href="{{ url_for('explore_notes') }}">Explore Notes</a>
+                    <a class="nav-link" href="{{ url_for('upload_note') }}">Upload Notes</a>
+                    <a class="nav-link active" href="{{ url_for('my_uploads') }}">My Uploads</a>
+                </div>
+                <span class="notes-user">{{ current_user.full_name }}</span>
+                <form method="post" action="{{ url_for('logout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="button button-small button-outline" type="submit">Log out</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <main class="notes-main">
+        <div class="notes-page-heading notes-page-heading-row">
+            <div>
+                <p class="eyebrow">YOUR CONTRIBUTIONS</p>
+                <h1>My uploads</h1>
+                <p>Keep track of the study notes you have shared.</p>
+            </div>
+            <a class="button" href="{{ url_for('upload_note') }}">Upload a note <span aria-hidden="true">↑</span></a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-list" role="status" aria-live="polite">
+                    {% for category, message in messages %}
+                        <p class="flash-message flash-{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if notes %}
+            <div class="managed-notes-grid">
+                {% for note in notes %}
+                    <article class="managed-note-card">
+                        <div class="managed-note-labels">
+                            <span class="pdf-label">PDF</span>
+                            <span class="subject-label">{{ note.subject }}</span>
+                        </div>
+                        <h2>{{ note.title }}</h2>
+                        <p class="managed-note-description">{{ note.description }}</p>
+                        <div class="managed-note-meta">
+                            <span>Semester {{ note.semester }}</span>
+                            <time datetime="{{ note.upload_date.isoformat() }}">{{ note.upload_date.strftime("%b %d, %Y") }}</time>
+                        </div>
+                        <div class="managed-note-actions">
+                            <a class="button button-small" href="{{ url_for('download_note', note_id=note.id) }}">
+                                Download PDF <span aria-hidden="true">↓</span>
+                            </a>
+                            <form class="delete-note-form" method="post"
+                                  action="{{ url_for('delete_note', note_id=note.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="button button-small button-danger" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <section class="notes-empty-state">
+                <span class="empty-note-icon" aria-hidden="true">N</span>
+                <h2>No uploads yet</h2>
+                <p>When you share your first PDF, it will appear here.</p>
+                <a class="button" href="{{ url_for('upload_note') }}">Upload your first note</a>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your NoteNest student dashboard.">
+    <title>Dashboard | NoteNest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+    <header class="site-header">
+        <nav class="navbar container" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="NoteNest home">
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span>Note<span class="brand-accent">Nest</span></span>
+            </a>
+            <div class="notes-navigation">
+                <div class="notes-nav-links">
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link" href="{{ url_for('explore_notes') }}">Explore Notes</a>
+                    <a class="nav-link" href="{{ url_for('upload_note') }}">Upload Notes</a>
+                    <a class="nav-link" href="{{ url_for('my_uploads') }}">My Uploads</a>
+                </div>
+                <span class="notes-user">{{ current_user.full_name }}</span>
+                <form method="post" action="{{ url_for('logout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="button button-small button-outline" type="submit">Log out</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-main container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-list" role="status" aria-live="polite">
+                    {% for category, message in messages %}
+                        <p class="flash-message flash-{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <section class="dashboard-welcome">
+            <p class="eyebrow">YOUR NOTENEST SPACE</p>
+            <h1>Welcome, {{ current_user.full_name }}.</h1>
+            <p>You are signed in with <strong>{{ current_user.email }}</strong>.</p>
+        </section>
+        <section class="dashboard-placeholder">
+            <span class="subject-icon icon-blue" aria-hidden="true">N</span>
+            <div>
+                <h2>Your student dashboard</h2>
+                <p>Explore notes shared by students or upload a PDF to help someone with their studies.</p>
+            </div>
+            <div class="dashboard-actions">
+                <a class="button button-small" href="{{ url_for('explore_notes') }}">Explore notes</a>
+                <a class="button button-small button-outline" href="{{ url_for('upload_note') }}">Upload notes</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

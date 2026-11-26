@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore and download student-shared study notes on NoteNest.">
+    <title>Explore notes | NoteNest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="notes-page">
+    <header class="site-header">
+        <nav class="navbar notes-navbar container" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="NoteNest home">
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span>Note<span class="brand-accent">Nest</span></span>
+            </a>
+            <div class="notes-navigation">
+                <div class="notes-nav-links">
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link active" href="{{ url_for('explore_notes') }}">Explore Notes</a>
+                    <a class="nav-link" href="{{ url_for('upload_note') }}">Upload Notes</a>
+                    <a class="nav-link" href="{{ url_for('my_uploads') }}">My Uploads</a>
+                </div>
+                <span class="notes-user">{{ current_user.full_name }}</span>
+                <form method="post" action="{{ url_for('logout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="button button-small button-outline" type="submit">Log out</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <main class="notes-main">
+        <div class="notes-page-heading">
+            <p class="eyebrow">STUDENT-SHARED RESOURCES</p>
+            <h1>Explore notes</h1>
+            <p>Find study materials shared by students across the community.</p>
+        </div>
+
+        <form class="notes-filter-form" method="get" action="{{ url_for('explore_notes') }}">
+            <label class="filter-search">
+                <span class="visually-hidden">Search note titles</span>
+                <input class="auth-input" type="search" name="search" value="{{ search }}"
+                       maxlength="120" placeholder="Search notes by title...">
+            </label>
+            <label class="filter-subject">
+                <span class="visually-hidden">Filter by subject</span>
+                <select class="auth-input" name="subject">
+                    <option value="">All subjects</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}" {% if selected_subject == subject %}selected{% endif %}>
+                            {{ subject }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button class="button" type="submit">Search notes</button>
+            {% if search or selected_subject %}
+                <a class="clear-filter" href="{{ url_for('explore_notes') }}">Clear</a>
+            {% endif %}
+        </form>
+
+        <div class="results-heading">
+            <h2>Available notes</h2>
+            <span>{{ notes|length }} {{ "note" if notes|length == 1 else "notes" }}</span>
+        </div>
+
+        {% if notes %}
+            <div class="managed-notes-grid">
+                {% for note in notes %}
+                    <article class="managed-note-card">
+                        <div class="managed-note-labels">
+                            <span class="pdf-label">PDF</span>
+                            <span class="subject-label">{{ note.subject }}</span>
+                        </div>
+                        <h2>{{ note.title }}</h2>
+                        <p class="managed-note-description">{{ note.description }}</p>
+                        <div class="managed-note-meta">
+                            <span>Semester {{ note.semester }}</span>
+                            <time datetime="{{ note.upload_date.isoformat() }}">{{ note.upload_date.strftime("%b %d, %Y") }}</time>
+                        </div>
+                        <div class="managed-note-footer">
+                            <span>Shared by <strong>{{ note.uploader.full_name }}</strong></span>
+                            <a class="button button-small" href="{{ url_for('download_note', note_id=note.id) }}">
+                                Download PDF <span aria-hidden="true">↓</span>
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <section class="notes-empty-state">
+                <span class="empty-note-icon" aria-hidden="true">N</span>
+                <h2>No notes found</h2>
+                <p>Try a different title or subject, or be the first to share notes in this subject.</p>
+                <a class="button" href="{{ url_for('upload_note') }}">Upload a note</a>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>

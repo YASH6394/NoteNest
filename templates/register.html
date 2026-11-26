@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create a NoteNest student account.">
+    <title>Create an account | NoteNest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+    <main class="auth-layout auth-layout-register">
+        <aside class="auth-aside">
+            <a class="brand auth-brand" href="{{ url_for('home') }}">
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span>Note<span class="brand-accent">Nest</span></span>
+            </a>
+            <div class="auth-aside-copy">
+                <span class="auth-kicker">MAKE ROOM TO GROW</span>
+                <h1>Better notes. Better together.</h1>
+                <p>Join students sharing ideas, study resources, and a little encouragement.</p>
+            </div>
+            <div class="auth-aside-note"><span aria-hidden="true">✦</span> Your next study session starts here.</div>
+            <a class="auth-home-link" href="{{ url_for('home') }}">← Back to NoteNest</a>
+        </aside>
+
+        <section class="auth-panel" aria-labelledby="register-heading">
+            <div class="auth-form-wrap">
+                <p class="auth-mobile-brand">Note<span>Nest</span></p>
+                <p class="eyebrow">GET STARTED FOR FREE</p>
+                <h2 id="register-heading">Create your account</h2>
+                <p class="auth-intro">A few details and you're ready to join the community.</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-list" role="status" aria-live="polite">
+                            {% for category, message in messages %}
+                                <p class="flash-message flash-{{ category }}">{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <form class="auth-form" method="post" action="{{ url_for('register') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="auth-field">
+                        <label for="full_name">Full name</label>
+                        <input class="auth-input" id="full_name" name="full_name" type="text"
+                               value="{{ full_name }}" maxlength="120" autocomplete="name"
+                               placeholder="Your full name" required>
+                    </div>
+                    <div class="auth-field">
+                        <label for="email">College email</label>
+                        <input class="auth-input" id="email" name="email" type="email"
+                               value="{{ email }}" maxlength="254" autocomplete="email"
+                               placeholder="you@college.edu" required>
+                    </div>
+                    <div class="auth-field">
+                        <label for="password">Password <span>At least 8 characters</span></label>
+                        <input class="auth-input" id="password" name="password" type="password"
+                               minlength="8" maxlength="128" autocomplete="new-password"
+                               placeholder="Create a password" required>
+                    </div>
+                    <div class="auth-field">
+                        <label for="confirm_password">Confirm password</label>
+                        <input class="auth-input" id="confirm_password" name="confirm_password" type="password"
+                               minlength="8" maxlength="128" autocomplete="new-password"
+                               placeholder="Enter your password again" required>
+                    </div>
+                    <button class="button auth-submit" type="submit">Create account <span aria-hidden="true">→</span></button>
+                </form>
+
+                <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Share a PDF study note with the NoteNest community.">
+    <title>Upload notes | NoteNest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="notes-page">
+    <header class="site-header">
+        <nav class="navbar notes-navbar container" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="NoteNest home">
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span>Note<span class="brand-accent">Nest</span></span>
+            </a>
+            <div class="notes-navigation">
+                <div class="notes-nav-links">
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link" href="{{ url_for('explore_notes') }}">Explore Notes</a>
+                    <a class="nav-link active" href="{{ url_for('upload_note') }}">Upload Notes</a>
+                    <a class="nav-link" href="{{ url_for('my_uploads') }}">My Uploads</a>
+                </div>
+                <span class="notes-user">{{ current_user.full_name }}</span>
+                <form method="post" action="{{ url_for('logout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="button button-small button-outline" type="submit">Log out</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <main class="notes-main upload-main">
+        <div class="notes-page-heading">
+            <p class="eyebrow">SHARE WHAT YOU KNOW</p>
+            <h1>Upload your notes</h1>
+            <p>Add a useful study resource for students learning the same subjects.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-list" role="status" aria-live="polite">
+                    {% for category, message in messages %}
+                        <p class="flash-message flash-{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="upload-layout">
+            <section class="upload-panel" aria-labelledby="upload-form-heading">
+                <h2 id="upload-form-heading">Note details</h2>
+                <p class="upload-panel-intro">Fields marked as required help other students find your note.</p>
+                <form class="upload-form" method="post" enctype="multipart/form-data"
+                      action="{{ url_for('upload_note') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="auth-field">
+                        <label for="title">Note title</label>
+                        <input class="auth-input" id="title" name="title" type="text"
+                               value="{{ form_data.title }}" maxlength="120"
+                               placeholder="e.g. Database normalization summary" required>
+                    </div>
+
+                    <div class="upload-fields-row">
+                        <div class="auth-field">
+                            <label for="subject">Subject</label>
+                            <select class="auth-input" id="subject" name="subject" required>
+                                <option value="">Choose a subject</option>
+                                {% for subject in subjects %}
+                                    <option value="{{ subject }}" {% if form_data.subject == subject %}selected{% endif %}>
+                                        {{ subject }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="auth-field">
+                            <label for="semester">Semester</label>
+                            <select class="auth-input" id="semester" name="semester" required>
+                                <option value="">Choose a semester</option>
+                                {% for semester in semesters %}
+                                    <option value="{{ semester }}" {% if form_data.semester == semester %}selected{% endif %}>
+                                        Semester {{ semester }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <label for="description">Short description</label>
+                        <textarea class="auth-input upload-textarea" id="description" name="description"
+                                  maxlength="500" placeholder="What topics do these notes cover?" required>{{ form_data.description }}</textarea>
+                    </div>
+
+                    <div class="auth-field">
+                        <label for="pdf_file">PDF file</label>
+                        <input class="auth-input upload-file" id="pdf_file" name="pdf_file" type="file"
+                               accept=".pdf,application/pdf" required>
+                        <span class="field-help">PDF only. Maximum file size: 10 MB.</span>
+                    </div>
+
+                    <button class="button auth-submit" type="submit">Upload note <span aria-hidden="true">↑</span></button>
+                </form>
+            </section>
+
+            <aside class="upload-guidance">
+                <span class="guidance-icon" aria-hidden="true">✦</span>
+                <p class="eyebrow">A QUICK CHECK</p>
+                <h2>Make it helpful.</h2>
+                <p>Choose a clear title and subject so classmates can find the right resource.</p>
+                <ul>
+                    <li>Upload a readable PDF file.</li>
+                    <li>Include the semester it covers.</li>
+                    <li>Keep descriptions short and specific.</li>
+                </ul>
+                <p class="guidance-privacy">Your file is stored privately and downloaded through NoteNest.</p>
+            </aside>
+        </div>
+    </main>
+</body>
+</html>
